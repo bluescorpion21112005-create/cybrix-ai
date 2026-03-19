@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Domain</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container history-container">
+    <section class="card">
+      <h1 class="title history-title">Verify Domain</h1>
+      <p class="muted">Project: <strong>{{ project.name }}</strong></p>
+      <p class="muted">Domain: <strong>{{ project.domain }}</strong></p>
+      <p class="muted">Verification token: <code>{{ project.verification_token }}</code></p>
+
+      <form method="post">
+        <div class="form-block">
+          <label>Enter verification token</label>
+          <input type="text" name="submitted_token" placeholder="Paste token here">
+        </div>
+        <div class="actions">
+          <button class="btn-primary" type="submit">Verify</button>
+          <a class="btn-link btn-muted" href="{{ url_for('projects') }}">Back</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-page">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <section class="hero-section">
+    <p class="eyebrow">Welcome back</p>
+    <h1 class="dashboard-title">Dashboard</h1>
+    <p class="dashboard-subtitle">
+      Subscription va premium funksiyalaringiz shu yerda ko‘rinadi.
+    </p>
+
+    <div class="hero-badges">
+      <div class="info-pill">
+        <span class="pill-label">Current Plan</span>
+        <span class="badge badge-pro">{{ current_user.subscription_plan|upper }}</span>
+      </div>
+
+      <div class="info-pill">
+        <span class="pill-label">Status</span>
+        <span class="status-active">{{ current_user.subscription_status|capitalize }}</span>
+      </div>
+    </div>
+  </section>
+
+  {% if current_user.subscription_plan == "pro" %}
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Batch Scan</h3>
+        <p>Ko‘p domenlarni bir vaqtda tez va qulay tekshirish.</p>
+        <a href="{{ url_for('batch_scan') }}" class="btn-primary">Open</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📘</div>
+        <h3>API Docs</h3>
+        <p>API hujjatlari va ulanish bo‘yicha to‘liq yo‘riqnoma.</p>
+        <a href="{{ url_for('api_docs') }}" class="btn-primary">Open</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎧</div>
+        <h3>Priority Support</h3>
+        <p>Tezkor yordam va ustuvor qo‘llab-quvvatlash xizmati.</p>
+        <a href="{{ url_for('priority_support') }}" class="btn-primary">Open</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📡</div>
+        <h3>Monitoring</h3>
+        <p>20 tagacha sayt monitoringi va doimiy nazorat tizimi.</p>
+        <a href="{{ url_for('monitoring') }}" class="btn-primary">Open</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h2>Premium funksiyalar yopiq</h2>
+      <p>Bu bo‘limlar faqat Pro subscription foydalanuvchilari uchun mavjud.</p>
+      <a href="{{ url_for('subscribe', plan='pro') }}" class="btn-primary">Upgrade to Pro</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+  <div class="container">
+    <section class="card">
+      <h1 class="title">Dashboard</h1>
+      <p><strong>Xush kelibsiz:</strong> {{ user.full_name }}</p>
+
+      <div class="subscription-box">
+        <h3>Obuna holati</h3>
+        <p><strong>Tarif:</strong> {{ user.subscription_plan }}</p>
+        <p><strong>Status:</strong> {{ user.subscription_status }}</p>
+        <p><strong>Boshlangan vaqt:</strong> {{ user.subscription_start }}</p>
+        <p><strong>Tugash vaqti:</strong> {{ user.subscription_end }}</p>
+      </div>
+
+      {% if user.subscription_status == "active" and user.subscription_plan == "corporate" %}
+        <div class="actions">
+          <a href="{{ url_for('batch_scan') }}" class="btn-link btn-primary">Batch Scan</a>
+          <a href="{{ url_for('api_access') }}" class="btn-link btn-primary">API Access</a>
+          <a href="{{ url_for('site_monitoring') }}" class="btn-link btn-primary">Site Monitoring</a>
+          <a href="{{ url_for('priority_support') }}" class="btn-link btn-primary">Priority Support</a>
+        </div>
+      {% else %}
+        <p>Bu premium funksiyalar faqat Korporativ tarif uchun ochiladi.</p>
+      {% endif %}
+
+      <hr>
+
+      <div class="actions">
+        <a href="{{ url_for('subscribe', plan='free') }}" class="btn-link btn-muted">Free</a>
+        <a href="{{ url_for('subscribe', plan='pro') }}" class="btn-link btn-secondary">Pro</a>
+        <a href="{{ url_for('subscribe', plan='corporate') }}" class="btn-link btn-primary">Corporate</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

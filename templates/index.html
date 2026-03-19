@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Security Lab</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-shield-halved"></i>
+        <span>AI Security Lab</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="login" class=""active">Registratsiya</a>
+        <a href="#home" class="active">Bosh sahifa</a>
+        <a href="#tools">Tools</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#pricing">Narxlar</a>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="/history" class="btn btn-outline">History</a>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1>AI asosida xavfsizlik tahlili</h1>
+        <p>
+          URL, response text, HTML/TXT fayl va lab case orqali tizimni tekshiring.
+          Platforma <strong>SQL Error Detection</strong> va <strong>AI Pentest Scanning</strong>
+          ni bitta joyda birlashtiradi.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="showTool('sql-tool')">
+            <i class="fas fa-database"></i> SQL Detector
+          </button>
+          <button class="btn btn-outline" onclick="showTool('pentest-tool')">
+            <i class="fas fa-shield-virus"></i> Pentest Scanner
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Asosiy modul</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Security checks</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">AI</div>
+          <div class="stat-label">Risk tahlili</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section id="tools" class="tools-section">
+      <div class="tool-switcher">
+        <button id="sql-tab" class="tool-tab active" onclick="showTool('sql-tool')">
+          <i class="fas fa-database"></i> SQL Error Detector
+        </button>
+        <button id="pentest-tab" class="tool-tab" onclick="showTool('pentest-tool')">
+          <i class="fas fa-shield-halved"></i> AI Pentest Scanner
+        </button>
+      </div>
+
+      <!-- SQL TOOL -->
+      <div id="sql-tool" class="tool-panel active">
+        <div class="panel-grid">
+          <section class="card">
+            <h2 class="section-title">SQL Error Detector</h2>
+            <form method="post" enctype="multipart/form-data">
+              <input type="hidden" name="tool_type" value="sql">
+
+              <div class="form-block">
+                <label for="url">Single URL</label>
+                <input id="url" type="text" name="url" value="{{ url }}" placeholder="https://example.com">
+              </div>
+
+              <div class="form-block">
+                <label for="batch_urls">Batch URLs (one per line)</label>
+                <textarea id="batch_urls" name="batch_urls" placeholder="https://example.com&#10;https://httpbin.org/html">{{ batch_urls }}</textarea>
+              </div>
+
+              <div class="form-block">
+                <label for="content">Single response text</label>
+                <textarea id="content" name="content" placeholder="Paste HTML, server response, error page, or request output here...">{{ content }}</textarea>
+              </div>
+
+              <div class="form-block">
+                <label for="files">Upload HTML/TXT files</label>
+                <input id="files" type="file" name="files" accept=".html,.htm,.txt" multiple>
+              </div>
+
+              <div class="form-block">
+                <label for="lab_case_path">Lab case folder path</label>
+                <input id="lab_case_path" type="text" name="lab_case_path" value="{{ lab_case_path }}" placeholder="lab_cases/case1">
+              </div>
+
+              <div class="form-row">
+                <div class="form-block">
+                  <label for="lab_sort">Lab sort</label>
+                  <input id="lab_sort" type="text" name="lab_sort" value="{{ lab_sort }}" placeholder="risk_desc, risk_asc, delta_desc">
+                </div>
+
+                <div class="form-block">
+                  <label for="lab_filter">Lab filter</label>
+                  <input id="lab_filter" type="text" name="lab_filter" value="{{ lab_filter }}" placeholder="sql_error, mysql, suspicious">
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">Analyze</button>
+                <button class="btn btn-secondary" type="submit" name="analyze_lab_case" value="1">Analyze Lab Case</button>
+                <a class="btn btn-outline" href="/export/csv">Export CSV</a>
+                <a class="btn btn-outline" href="/export/lab-csv">Export Lab CSV</a>
+              </div>
+            </form>
+
+            <div class="note-box">
+              <strong>Safe use:</strong> faqat o‘zingizga tegishli lab, training target, DVWA, Juice Shop,
+              PortSwigger labs yoki ruxsat berilgan fayllarda ishlating.
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="section-title">Latest SQL Result</h2>
+
+            {% if error %}
+              <div class="error-box">{{ error }}</div>
+            {% endif %}
+
+            {% if result %}
+              <div class="result-badge {{ badge_class_name(result['label']) }}">
+                Prediction: {{ result['label'] }}
+              </div>
+
+              <div class="stat-grid">
+                <div class="stat">
+                  <div class="k">Risk Score</div>
+                  <div class="v">{{ result['risk_score'] }}%</div>
+                </div>
+                <div class="stat">
+                  <div class="k">HTTP Status</div>
+                  <div class="v">{{ status if status is not none else '-' }}</div>
+                </div>
+                <div class="stat">
+                  <div class="k">Response Length</div>
+                  <div class="v">{{ length if length is not none else '-' }}</div>
+                </div>
+                <div class="stat">
+                  <div class="k">Source</div>
+                  <div class="v">{{ source_label if source_label else '-' }}</div>
+                </div>
+              </div>
+
+              <div class="meter-row">
+                <div class="meter-head"><span>NORMAL</span><span>{{ '%.3f'|format(result['normal']) }}</span></div>
+                <div class="bar"><div class="fill fill-normal" style="width: {{ result['normal'] * 100 }}%"></div></div>
+              </div>
+
+              <div class="meter-row">
+                <div class="meter-head"><span>SUSPICIOUS</span><span>{{ '%.3f'|format(result['suspicious']) }}</span></div>
+                <div class="bar"><div class="fill fill-suspicious" style="width: {{ result['suspicious'] * 100 }}%"></div></div>
+              </div>
+
+              <div class="meter-row">
+                <div class="meter-head"><span>SQL_ERROR</span><span>{{ '%.3f'|format(result['sql_error']) }}</span></div>
+                <div class="bar"><div class="fill fill-sql" style="width: {{ result['sql_error'] * 100 }}%"></div></div>
+              </div>
+
+              <div class="sub-title">Matched SQL keywords</div>
+              <div class="keyword-list">
+                {% if result['matched_keywords']['sql'] %}
+                  {% for kw in result['matched_keywords']['sql'] %}
+                    <span class="chip sql">{{ kw }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="muted">No SQL-specific keywords matched</span>
+                {% endif %}
+              </div>
+
+              <div class="sub-title">Matched suspicious keywords</div>
+              <div class="keyword-list">
+                {% if result['matched_keywords']['suspicious'] %}
+                  {% for kw in result['matched_keywords']['suspicious'] %}
+                    <span class="chip suspicious">{{ kw }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="muted">No suspicious keywords matched</span>
+                {% endif %}
+              </div>
+
+              <div class="sub-title">Highlighted preview</div>
+              <div class="preview">{{ highlighted_preview|safe }}</div>
+            {% else %}
+              <p class="muted">No analysis yet. Paste text, upload files, or enter URL values, then click Analyze.</p>
+            {% endif %}
+          </section>
+        </div>
+
+        {% if lab_case %}
+        <section class="card wide-card">
+          <h2 class="section-title">Lab Case Analyzer</h2>
+
+          <div class="stat-grid">
+            <div class="stat"><div class="k">Case</div><div class="v">{{ lab_case.case }}</div></div>
+            <div class="stat"><div class="k">Baseline Label</div><div class="v">{{ lab_case.baseline.label }}</div></div>
+            <div class="stat"><div class="k">Baseline Risk</div><div class="v">{{ lab_case.baseline.risk_score }}%</div></div>
+            <div class="stat"><div class="k">Payload Count</div><div class="v">{{ lab_case.payloads|length }}</div></div>
+          </div>
+
+          {% if lab_case.payloads %}
+          <div class="sub-title">Most Risky Payload</div>
+          <div class="history-item danger-border">
+            <div class="history-top">
+              <div class="history-source">{{ lab_case.payloads[0].file }}</div>
+              <span class="mini-badge {{ badge_class_name(lab_case.payloads[0].label) }}">{{ lab_case.payloads[0].label }}</span>
+            </div>
+            <div class="small">
+              risk {{ lab_case.payloads[0].risk_score }}% • risk delta {{ lab_case.payloads[0].risk_delta }} • length delta {{ lab_case.payloads[0].length_delta }}
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Payload File</th>
+                  <th>Prediction</th>
+                  <th>Risk</th>
+                  <th>Risk Δ</th>
+                  <th>Length</th>
+                  <th>Length Δ</th>
+                  <th>Matched SQL</th>
+                  <th>Matched Suspicious</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in lab_case.payloads %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ item.file }}</td>
+                  <td><span class="mini-badge {{ badge_class_name(item.label) }}">{{ item.label }}</span></td>
+                  <td>{{ item.risk_score }}%</td>
+                  <td>{{ item.risk_delta }}</td>
+                  <td>{{ item.length }}</td>
+                  <td>{{ item.length_delta }}</td>
+                  <td>{% if item.matched_sql %}{{ item.matched_sql|join(', ') }}{% else %}-{% endif %}</td>
+                  <td>{% if item.matched_suspicious %}{{ item.matched_suspicious|join(', ') }}{% else %}-{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          {% if lab_case.payloads[0].diff_html %}
+          <div class="sub-title">Baseline vs top payload diff</div>
+          <div class="diff-box">{{ lab_case.payloads[0].diff_html|safe }}</div>
+          {% endif %}
+          {% endif %}
+        </section>
+        {% endif %}
+      </div>
+
+      <!-- PENTEST TOOL -->
+      <div id="pentest-tool" class="tool-panel">
+        <div class="panel-grid">
+          <section class="card">
+            <h2 class="section-title">AI Pentest Scanner</h2>
+
+            <div class="form-block">
+              <label for="targetUrl">Target URL</label>
+              <input type="url" id="targetUrl" placeholder="https://saytingiz.uz" required>
+            </div>
+
+            <div class="form-block">
+              <label for="scanType">Scan Type</label>
+              <select id="scanType">
+                <option value="quick">Tezkor skanerlash</option>
+                <option value="full">To'liq skanerlash</option>
+                <option value="ai_enhanced">AI kuchaytirilgan</option>
+              </select>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" onclick="startScan()">
+                <i class="fas fa-search"></i> Pentest Scan
+              </button>
+            </div>
+
+            <div class="features-mini-grid">
+              <div class="mini-feature"><i class="fas fa-bug"></i><span>SQLi / XSS</span></div>
+              <div class="mini-feature"><i class="fas fa-robot"></i><span>AI Analysis</span></div>
+              <div class="mini-feature"><i class="fas fa-file-lines"></i><span>Reports</span></div>
+              <div class="mini-feature"><i class="fas fa-chart-line"></i><span>Risk Score</span></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="section-title">Pentest Results</h2>
+
+            <div id="scanResults" class="scan-results">
+              <div class="scan-progress">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+              <div id="resultsContent">
+                <p class="muted">No pentest scan yet. Enter a target URL and start scanning.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="dashboard-section">
+      <div class="bottom-grid">
+        <section class="card chart-card">
+          <h2 class="section-title">Dashboard</h2>
+          <div class="chart-wrap">
+            <canvas id="scanChart"></canvas>
+          </div>
+          <div class="sub-title">Summary</div>
+          <div class="stat-grid">
+            <div class="stat"><div class="k">Total</div><div class="v">{{ chart_counts.total }}</div></div>
+            <div class="stat"><div class="k">Normal</div><div class="v">{{ chart_counts.normal }}</div></div>
+            <div class="stat"><div class="k">Suspicious</div><div class="v">{{ chart_counts.suspicious }}</div></div>
+            <div class="stat"><div class="k">SQL Error</div><div class="v">{{ chart_counts.sql_error }}</div></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Batch Results</h2>
+          {% if batch_results %}
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Prediction</th>
+                    <th>Risk</th>
+                    <th>Length</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in batch_results %}
+                  <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.source }}</td>
+                    <td>{{ item.status }}</td>
+                    <td><span class="mini-badge {{ badge_class_name(item.label) }}">{{ item.label }}</span></td>
+                    <td>{{ item.risk_score }}%</td>
+                    <td>{{ item.length }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="muted">No batch results yet.</p>
+          {% endif %}
+        </section>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+      <h2>Imkoniyatlar</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-database"></i>
+          <h3>SQL Error Detection</h3>
+          <p>Response text, URL, fayl va lab case asosida SQL xatolarini aniqlash</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-shield-halved"></i>
+          <h3>Pentest Scanning</h3>
+          <p>Web xavfsizlik tekshiruvlari va AI yordamida chuqur tahlil</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-robot"></i>
+          <h3>AI Analysis</h3>
+          <p>Risk score, severity va remediation bo‘yicha tavsiyalar</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-chart-column"></i>
+          <h3>Dashboard</h3>
+          <p>Scan tarixi, natijalar va umumiy ko‘rsatkichlarni kuzatish</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+   <section id="pricing" class="pricing">
+  <h2>Tarif rejalari</h2>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <h3>Bepul</h3>
+      <div class="price">0 <span>/oy</span></div>
+      <ul>
+        <li><i class="fas fa-check"></i> Cheklangan tekshiruv</li>
+        <li><i class="fas fa-check"></i> Asosiy SQL detection</li>
+        <li><i class="fas fa-check"></i> Basic pentest</li>
+        <li><i class="fas fa-times"></i> Advanced AI analysis</li>
+      </ul>
+      <a href="{{ url_for('subscribe', plan='free') }}" class="btn btn-outline">Boshlash</a>
+    </div>
+
+    <div class="pricing-card popular">
+      <div class="popular-badge">Ommabop</div>
+      <h3>Professional</h3>
+      <div class="price">99 000 <span>/oy</span></div>
+      <ul>
+        <li><i class="fas fa-check"></i> To‘liq SQL analysis</li>
+        <li><i class="fas fa-check"></i> Full pentest scan</li>
+        <li><i class="fas fa-check"></i> AI tavsiyalar</li>
+        <li><i class="fas fa-check"></i> Export va monitoring</li>
+      </ul>
+      <a href="{{ url_for('subscribe', plan='pro') }}" class="btn">Tanlash</a>
+    </div>
+
+    <div class="pricing-card">
+      <h3>Korporativ</h3>
+      <div class="price">299 000 <span>/oy</span></div>
+      <ul>
+        <li><i class="fas fa-check"></i> Cheksiz tekshiruvlar</li>
+        <li><i class="fas fa-check"></i> Batch skanerlash</li>
+        <li><i class="fas fa-check"></i> API access</li>
+        <li><i class="fas fa-check"></i> 20 ta sayt monitoringi</li>
+        <li><i class="fas fa-check"></i> Priority support</li>
+      </ul>
+      <a href="{{ url_for('subscribe', plan='corporate') }}" class="btn">Boshlash</a>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>AI Security Lab</h4>
+        <p>SQL error detection va AI pentest scanning bir platformada</p>
+      </div>
+      <div class="footer-section">
+        <h4>Havolalar</h4>
+        <a href="#home">Bosh sahifa</a>
+        <a href="#tools">Tools</a>
+        <a href="#dashboard">Dashboard</a>
+      </div>
+      <div class="footer-section">
+        <h4>Bog'lanish</h4>
+        <p><i class="fas fa-envelope"></i> info@aisecuritylab.uz</p>
+        <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AI Security Lab. Barcha huquqlar himoyalangan.</p>
+    </div>
+  </footer>
+
+  <script>
+    function showTool(toolId) {
+      document.querySelectorAll('.tool-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tool-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      document.getElementById(toolId).classList.add('active');
+
+      if (toolId === 'sql-tool') {
+        document.getElementById('sql-tab').classList.add('active');
+      } else {
+        document.getElementById('pentest-tab').classList.add('active');
+      }
+    }
+
+    const chartData = {{ chart_json|safe }};
+    const ctx = document.getElementById("scanChart");
+
+    if (ctx) {
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["NORMAL", "SUSPICIOUS", "SQL_ERROR"],
+          datasets: [{
+            label: "Scan Count",
+            data: [chartData.normal, chartData.suspicious, chartData.sql_error],
+            backgroundColor: ["#22c55e", "#f59e0b", "#ef4444"],
+            borderRadius: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              ticks: { color: "#cbd5e1" },
+              grid: { color: "rgba(148, 163, 184, 0.08)" }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: "#cbd5e1", precision: 0 },
+              grid: { color: "rgba(148, 163, 184, 0.08)" }
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

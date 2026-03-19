@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pentest Tizimi - Veb-sayt xavfsizlik tekshiruvi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-halos"></i>
+                <span>AI Pentest</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="active">Bosh sahifa</a>
+                <a href="#features">Xususiyatlar</a>
+                <a href="#pricing">Narxlar</a>
+                <a href="#contact">Bog'lanish</a>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" onclick="openLoginModal()">Kirish</button>
+                <button class="btn btn-primary" onclick="openRegisterModal()">Ro'yxatdan o'tish</button>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>AI asosida veb-saytlar xavfsizligini tekshirish</h1>
+                <p>Saytingizdagi zaifliklarni aniqlang va ularni bartaraf eting. 50+ xavfsizlik tekshiruvi, real-time tahlil.</p>
+                
+                <div class="scan-box">
+                    <h2>Saytni tekshirish</h2>
+                    <div class="input-group">
+                        <input type="url" id="targetUrl" placeholder="https://saytingiz.uz" required>
+                        <select id="scanType">
+                            <option value="quick">Tezkor skanerlash</option>
+                            <option value="full">To'liq skanerlash</option>
+                            <option value="ai_enhanced">AI kuchaytirilgan</option>
+                        </select>
+                        <button class="btn btn-primary btn-large" onclick="startScan()">
+                            <i class="fas fa-search"></i> Skanerlash
+                        </button>
+                    </div>
+                    <p class="scan-info">* Bepul skanerlash - kuniga 3 ta saytgacha</p>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Xavfsizlik testlari</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Skanerlangan saytlar</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Aniqlik darajasi</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <h2>Imkoniyatlar</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bug"></i>
+                    <h3>Zaifliklarni aniqlash</h3>
+                    <p>SQL Injection, XSS, CSRF va boshqa zaifliklarni avtomatik aniqlash</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI tahlili</h3>
+                    <p>Sun'iy intellekt yordamida xavflarni chuqur tahlil qilish</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-pdf"></i>
+                    <h3>Hisobotlar</h3>
+                    <p>HTML, PDF, JSON formatlarida batafsil hisobotlar</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>Real-time monitoring</h3>
+                    <p>Saytingizni doimiy kuzatish va xabardor qilish</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield"></i>
+                    <h3>Remediation</h3>
+                    <p>Zaifliklarni bartaraf etish bo'yicha tavsiyalar</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Risk assessment</h3>
+                    <p>Xavf darajasini baholash va prioritetlashtirish</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="recent-scans" class="recent-scans">
+            <h2>Oxirgi skanerlar</h2>
+            <div class="scans-list" id="scansList">
+                <div class="loading">Yuklanmoqda...</div>
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing">
+            <h2>Tarif rejalari</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Bepul</h3>
+                    <div class="price">0 <span>/oy</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Kuniga 3 ta tekshiruv</li>
+                        <li><i class="fas fa-check"></i> Asosiy zaifliklarni aniqlash</li>
+                        <li><i class="fas fa-check"></i> HTML hisobot</li>
+                        <li><i class="fas fa-times"></i> AI tahlili</li>
+                        <li><i class="fas fa-times"></i> Batch skanerlash</li>
+                    </ul>
+                    <button class="btn btn-outline">Boshlash</button>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Ommabop</div>
+                    <h3>Professional</h3>
+                    <div class="price">99 000 <span>/oy</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Cheksiz tekshiruvlar</li>
+                        <li><i class="fas fa-check"></i> To'liq zaifliklarni aniqlash</li>
+                        <li><i class="fas fa-check"></i> AI tahlili</li>
+                        <li><i class="fas fa-check"></i> PDF/JSON hisobotlar</li>
+                        <li><i class="fas fa-check"></i> 5 ta sayt monitoringi</li>
+                    </ul>
+                    <button class="btn btn-primary">Tanlash</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Korporativ</h3>
+                    <div class="price">299 000 <span>/oy</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Cheksiz tekshiruvlar</li>
+                        <li><i class="fas fa-check"></i> Batch skanerlash</li>
+                        <li><i class="fas fa-check"></i> API access</li>
+                        <li><i class="fas fa-check"></i> 20 ta sayt monitoringi</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
+                    </ul>
+                    <button class="btn btn-outline">Tanlash</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal oynalar -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Kirish</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Parol</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Kirish</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Ro'yxatdan o'tish</h2>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="registerName">Ism</label>
+                    <input type="text" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Parol</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Parolni tasdiqlash</label>
+                    <input type="password" id="registerConfirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Ro'yxatdan o'tish</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="scanModal" class="modal">
+        <div class="modal-content scan-modal">
+            <span class="close" onclick="closeScanModal()">&times;</span>
+            <h2>Skanerlash natijalari</h2>
+            <div id="scanResults" class="scan-results">
+                <div class="scan-progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>AI Pentest</h4>
+                <p>Xavfsiz veb-saytlar uchun AI asosidagi yechim</p>
+            </div>
+            <div class="footer-section">
+                <h4>Havolalar</h4>
+                <a href="#home">Bosh sahifa</a>
+                <a href="#features">Xususiyatlar</a>
+                <a href="#pricing">Narxlar</a>
+            </div>
+            <div class="footer-section">
+                <h4>Bog'lanish</h4>
+                <p><i class="fas fa-envelope"></i> info@aipentest.uz</p>
+                <p><i class="fas fa-phone"></i> +998 90 123 45 67</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 AI Pentest Tizimi. Barcha huquqlar himoyalangan.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

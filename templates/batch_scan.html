@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h1>Batch Scan</h1>
+    <p>Bir nechta URL yoki domenlarni bir vaqtda tekshirish sahifasi.</p>
+
+    <form method="post">
+      <div class="form-group">
+        <label for="targets">Targets</label>
+        <textarea id="targets" name="targets" rows="8" class="form-control"
+          placeholder="example.com&#10;testsite.com&#10;mysite.uz"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Start Scan</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

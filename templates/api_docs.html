@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h1>API Documentation</h1>
+    <p>Tizim API endpointlari va ulardan foydalanish bo‘yicha ma’lumotlar.</p>
+
+    <h3>Authentication</h3>
+    <pre>
+Authorization: Bearer YOUR_API_KEY
+    </pre>
+
+    <h3>Example Request</h3>
+    <pre>
+GET /api/v1/scans
+Host: yourdomain.com
+Authorization: Bearer YOUR_API_KEY
+    </pre>
+
+    <h3>Available Endpoints</h3>
+    <ul>
+      <li><strong>GET /api/v1/scans</strong> - barcha scanlar ro‘yxati</li>
+      <li><strong>POST /api/v1/scans</strong> - yangi scan yaratish</li>
+      <li><strong>GET /api/v1/results</strong> - natijalarni olish</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

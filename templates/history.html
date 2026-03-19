@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan History</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container history-container">
+    <section class="card">
+      <h1 class="title history-title">Scan History</h1>
+      <p class="muted">All recent scans are shown here. You can export the full history as CSV or clear it from this page.</p>
+
+      <div class="actions">
+        <a class="btn-link btn-muted" href="/">Back to Scanner</a>
+        <a class="btn-link btn-secondary" href="/export/csv">Export CSV</a>
+        <form method="post" action="/history/clear" class="inline-form">
+          <button class="btn-primary" type="submit">Clear History</button>
+        </form>
+      </div>
+
+      {% if history %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Timestamp</th>
+              <th>Source</th>
+              <th>Prediction</th>
+              <th>Risk</th>
+              <th>Status</th>
+              <th>Length</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in history %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ item.timestamp }}</td>
+              <td>{{ item.source }}</td>
+              <td><span class="mini-badge {{ badge_class_name(item.label) }}">{{ item.label }}</span></td>
+              <td>{{ item.risk_score }}%</td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.length }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="muted">History is empty.</p>
+      {% endif %}
+    </section>
+  </div>
+</body>
+</html>

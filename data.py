@@ -1,0 +1,41 @@
+DATA = [
+    # SQL_ERROR = 2
+    ("You have an error in your SQL syntax near 'SELECT'", 2),
+    ("Warning: mysql_fetch_array() expects parameter 1 to be resource", 2),
+    ("Unclosed quotation mark after the character string", 2),
+    ("PostgreSQL query failed: ERROR: syntax error at or near", 2),
+    ("SQLite error: near \"'\": syntax error", 2),
+    ("ORA-01756: quoted string not properly terminated", 2),
+    ("Database error occurred while executing query", 2),
+    ("Internal server error due to malformed SQL statement", 2),
+    ("mysql_num_rows() expects parameter 1 to be resource", 2),
+    ("SQLSTATE[42000]: Syntax error or access violation", 2),
+    ("ODBC SQL Server Driver syntax error", 2),
+    ("Microsoft OLE DB Provider for SQL Server error", 2),
+
+    # SUSPICIOUS = 1
+    ("Internal server error", 1),
+    ("Unexpected server response", 1),
+    ("Request could not be processed", 1),
+    ("Application exception occurred", 1),
+    ("Input caused processing failure", 1),
+    ("Server encountered an unexpected condition", 1),
+    ("Malformed request detected", 1),
+    ("Query execution failed", 1),
+    ("Parameter validation failed", 1),
+    ("Invalid input format", 1),
+
+    # NORMAL = 0
+    ("Welcome back, user!", 0),
+    ("Product list loaded successfully", 0),
+    ("Your profile has been updated", 0),
+    ("No results found for your search", 0),
+    ("Login failed. Invalid password.", 0),
+    ("Page not found", 0),
+    ("Item added to cart", 0),
+    ("Search completed successfully", 0),
+    ("Dashboard loaded normally", 0),
+    ("Settings saved successfully", 0),
+    ("User registered successfully", 0),
+    ("Logout completed", 0),
+]   

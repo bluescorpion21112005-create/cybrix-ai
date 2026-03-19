@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h1>Monitoring</h1>
+    <p>20 tagacha sayt monitoringi va holatini kuzatish.</p>
+
+    <form method="post">
+      <div class="form-group">
+        <label for="site_url">Website URL</label>
+        <input type="text" id="site_url" name="site_url" class="form-control" placeholder="https://example.com">
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add Site</button>
+    </form>
+
+    <hr>
+
+    <h3>Your Monitored Sites</h3>
+    <ul>
+      <li>https://example.com - Online</li>
+      <li>https://mysite.uz - Offline</li>
+      <li>https://testsite.com - Online</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

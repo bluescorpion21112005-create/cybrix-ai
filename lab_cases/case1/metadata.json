@@ -1,0 +1,6 @@
+{
+  "title": "Case 1 - Basic SQL Error Signals",
+  "description": "Baseline and payload responses for testing SQL error and suspicious server behavior.",
+  "target_type": "lab-demo",
+  "notes": "Used for offline AI-assisted response analysis only."
+}

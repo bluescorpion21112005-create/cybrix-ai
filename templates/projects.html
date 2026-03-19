@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1 class="title">Dashboard</h1>
+      <p class="subtitle">Manage your projects, verified domains, scans, and reports.</p>
+      <div class="actions">
+        <a class="btn-link btn-primary" href="{{ url_for('home') }}">Open Scanner</a>
+        <a class="btn-link btn-secondary" href="{{ url_for('projects') }}">Projects</a>
+        <a class="btn-link btn-muted" href="{{ url_for('history_page') }}">History</a>
+        <a class="btn-link btn-muted" href="{{ url_for('auth.logout') }}">Logout</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="stat-grid">
+        <div class="stat"><div class="k">Projects</div><div class="v">{{ stats.projects }}</div></div>
+        <div class="stat"><div class="k">Verified</div><div class="v">{{ stats.verified_projects }}</div></div>
+        <div class="stat"><div class="k">Scans</div><div class="v">{{ stats.scans }}</div></div>
+        <div class="stat"><div class="k">High Risk</div><div class="v">{{ stats.high_risk }}</div></div>
+      </div>
+    </section>
+
+    <section class="card mt-22">
+      <h2 class="section-title">Recent Scans</h2>
+      {% if recent_scans %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Source</th>
+              <th>Prediction</th>
+              <th>Risk</th>
+              <th>Status</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in recent_scans %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ item.source }}</td>
+              <td><span class="mini-badge {{ badge_class_name(item.label) }}">{{ item.label }}</span></td>
+              <td>{{ item.risk_score }}%</td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.created_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="muted">No scans yet.</p>
+      {% endif %}
+    </section>
+  </div>
+</body>
+</html>
