@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Security Lab | Matrix Security Suite</title>
+  <title>AI Security Lab | Futuristic Cyber Security Suite</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    /* Matrix Rain Effect Styles */
+    /* ============================================
+       FUTURISTIC CYBER UI - COMPLETE DESIGN SYSTEM
+       ============================================ */
+    
+    /* Matrix Rain Effect */
     #matrix-canvas {
         position: fixed;
         top: 0;
@@ -17,7 +21,7 @@
         height: 100%;
         pointer-events: none;
         z-index: 0;
-        opacity: 0.25;
+        opacity: 0.2;
     }
 
     #plexus-canvas {
@@ -28,7 +32,7 @@
         height: 100%;
         pointer-events: none;
         z-index: 0;
-        opacity: 0.35;
+        opacity: 0.3;
     }
 
     .matrix-overlay {
@@ -43,6 +47,12 @@
             rgba(0, 0, 0, 0.85) 100%);
         pointer-events: none;
         z-index: 1;
+        animation: plexusGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes plexusGlow {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
     }
 
     body {
@@ -51,9 +61,10 @@
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        background: #0a0a0f;
     }
 
-    /* Ensure content stays above matrix effect */
+    /* Content above effects */
     nav, main, footer, .container, .modal, .dashboard-page,
     .history-container, .subscription-box, .hero, .tools-section,
     .dashboard-section, .features, .pricing {
@@ -61,35 +72,100 @@
         z-index: 3;
     }
 
-    /* Matrix title animation */
+    /* Cyber Navbar */
+    .navbar {
+        background: rgba(10, 20, 40, 0.85) !important;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    }
+
+    .logo {
+        color: #00ffff !important;
+        text-shadow: 0 0 10px #00ffff;
+    }
+
     .logo span {
-        animation: matrixPulse 2s ease-in-out infinite;
+        animation: cyberPulse 2s ease-in-out infinite;
     }
 
-    @keyframes matrixPulse {
-        0%, 100% {
-            text-shadow: 0 0 2px #0f0, 0 0 5px #0f0;
-        }
-        50% {
-            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
-        }
+    @keyframes cyberPulse {
+        0%, 100% { text-shadow: 0 0 2px #00ffff, 0 0 5px #00ffff; }
+        50% { text-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff; }
     }
 
-    /* Hero section matrix glow */
-    .hero-content h1 {
-        animation: matrixGlow 3s ease-in-out infinite alternate;
+    .nav-links a {
+        color: #fff !important;
+        transition: all 0.3s ease;
     }
 
-    @keyframes matrixGlow {
-        from {
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-        }
-        to {
-            text-shadow: 0 0 20px rgba(0, 255, 0, 0.6), 0 0 30px rgba(0, 255, 0, 0.4);
-        }
+    .nav-links a:hover, .nav-links a.active {
+        color: #00ffff !important;
+        text-shadow: 0 0 8px #00ffff;
     }
 
-    /* Scanning Line Animation */
+    /* Admin Link Style */
+    .admin-link {
+        background: linear-gradient(135deg, #00ffff, #ff00ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        font-weight: bold;
+    }
+
+    /* Cyber Buttons */
+    .btn-primary, button[type="submit"] {
+        background: linear-gradient(135deg, #00ffff, #00ccff, #0099ff);
+        border: none;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .btn-primary:hover, button[type="submit"]:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid #00ffff;
+        color: #00ffff;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline:hover {
+        background: #00ffff;
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    /* Hero Section Cyber Style */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 100px 2rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05) 0%, transparent 70%);
+        z-index: -1;
+    }
+
+    /* Scanning Line */
     .hero::after {
         content: '';
         position: absolute;
@@ -108,31 +184,168 @@
         100% { left: 100%; }
     }
 
-    /* Cyber Scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+    .hero-content h1 {
+        font-size: 4rem;
+        background: linear-gradient(135deg, #00ffff, #00ccff, #ff00ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        animation: titleGlow 2s ease-in-out infinite alternate;
     }
 
-    ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.5);
-        border-radius: 4px;
+    @keyframes titleGlow {
+        from { text-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+        to { text-shadow: 0 0 40px rgba(0, 255, 255, 0.6); }
     }
 
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #00ffff, #00ccff);
-        border-radius: 4px;
+    .hero-content p {
+        color: #ccc;
+        font-size: 1.2rem;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: #00ffff;
+    /* Cyber Stats Cards */
+    .hero-stats .stat-item {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 20px 30px;
+        transition: all 0.3s ease;
     }
 
-    /* Floating Labels Effect */
+    .hero-stats .stat-item:hover {
+        border-color: #00ffff;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    /* Glassmorphism Cards */
+    .card {
+        background: rgba(15, 25, 45, 0.65) !important;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        border-color: #00ffff;
+        box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+    }
+
+    /* Neon Border Animation for Cards */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #00ffff, #00ccff, #ff00ff, #00ffff);
+        border-radius: 26px;
+        opacity: 0;
+        z-index: -1;
+        transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before {
+        opacity: 0.3;
+        animation: borderRotate 3s linear infinite;
+    }
+
+    @keyframes borderRotate {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Section Titles */
+    .section-title, .features h2, .pricing h2 {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        border-color: #00ffff;
+        box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+    }
+
+    .feature-card i {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        color: #fff;
+        font-size: 1.5rem;
+    }
+
+    .feature-card p {
+        color: #ccc;
+    }
+
+    /* Pricing Cards */
+    .pricing-card {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 24px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        border-color: #00ffff;
+        box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+    }
+
+    .pricing-card.popular {
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    }
+
+    .popular-badge {
+        background: linear-gradient(135deg, #00ffff, #00ccff);
+        color: #000;
+        font-weight: bold;
+    }
+
+    .price {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: 3rem;
+    }
+
+    /* Floating Labels */
     .form-block {
         position: relative;
-        margin-top: 5px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     .form-block label {
@@ -142,10 +355,8 @@
         transform: translateY(-50%);
         transition: all 0.3s ease;
         pointer-events: none;
-        color: rgba(0, 255, 255, 0.7);
+        color: rgba(0, 255, 255, 0.6);
         font-size: 14px;
-        background: transparent;
-        padding: 0;
     }
 
     .form-block input:focus ~ label,
@@ -157,7 +368,7 @@
         font-size: 11px;
         color: #00ffff;
         background: rgba(0, 0, 0, 0.8);
-        padding: 0 5px;
+        padding: 0 8px;
         border-radius: 4px;
     }
 
@@ -167,21 +378,23 @@
         background: rgba(0, 0, 0, 0.5) !important;
         border: 1px solid rgba(0, 255, 255, 0.3);
         color: #fff !important;
+        border-radius: 12px;
+        padding: 14px 18px;
+        width: 100%;
         transition: all 0.3s ease;
     }
 
     .form-block input:focus,
-    .form-block textarea:focus,
-    .form-block select:focus {
+    .form-block textarea:focus {
         border-color: #00ffff;
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
         outline: none;
     }
 
-    /* Progress Bar Cyber Style */
+    /* Progress Bar */
     .progress-bar {
-        background: linear-gradient(90deg, #00ffff, #00ccff, #0099ff);
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        background: linear-gradient(90deg, #00ffff, #00ccff);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
         position: relative;
         overflow: hidden;
     }
@@ -202,17 +415,19 @@
         100% { transform: translateX(100%); }
     }
 
-    /* AI Analysis Neon Border Pulse */
+    /* AI Analysis Box */
     .ai-analysis {
         background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 100, 255, 0.2));
         border: 1px solid #00ffff;
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
         animation: borderPulse 2s infinite;
+        border-radius: 16px;
+        padding: 20px;
     }
 
     @keyframes borderPulse {
-        0% { border-color: #00ffff; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
-        100% { border-color: #00ccff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); }
+        0% { border-color: #00ffff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); }
+        100% { border-color: #ff00ff; box-shadow: 0 0 35px rgba(255, 0, 255, 0.5); }
     }
 
     /* Cyber Chips */
@@ -237,37 +452,81 @@
         color: #ffff88;
     }
 
-    /* Cyber Stats Cards */
-    .stat-item,
-    .stat-card {
+    /* Cyber Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #00ffff, #00ccff);
+        border-radius: 4px;
+    }
+
+    /* Footer */
+    footer {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(12px);
+        border-top: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    .footer-section h4 {
+        color: #00ffff;
+    }
+
+    .footer-section a:hover {
+        color: #00ffff;
+    }
+
+    /* Subscription Box */
+    .subscription-box {
         background: rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(0, 255, 255, 0.3);
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
     }
 
-    .stat-item:hover,
-    .stat-card:hover {
+    .subscription-box code {
+        color: #00ffff;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            padding: 20px !important;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .pricing-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    /* Loading Animation */
+    .loading {
+        color: #00ffff;
+        text-shadow: 0 0 5px #00ffff;
+    }
+
+    .loading::after {
         border-color: #00ffff;
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        transform: translateY(-5px);
-    }
-
-    .stat-number,
-    .stat-value {
-        text-shadow: 0 0 10px #00ffff;
-    }
-
-    /* Fix hero section position */
-    .hero {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 6rem 2rem 2rem;
-        position: relative;
-        overflow: hidden;
+        border-top-color: #00ccff;
     }
   </style>
 </head>
@@ -277,8 +536,6 @@
   <canvas id="plexus-canvas"></canvas>
   <div class="matrix-overlay"></div>
 
-  <form method="post" class="login-form"></form>
-  
   <nav class="navbar">
     <div class="nav-container">
       <div class="logo">
@@ -287,12 +544,17 @@
       </div>
 
       <div class="nav-links">
-        <a href="login">Registratsiya</a>
+        <a href="{{ url_for('auth.login') if not current_user.is_authenticated else '#' }}">Registratsiya</a>
         <a href="#home" class="active">Bosh sahifa</a>
         <a href="#tools">Tools</a>
         <a href="#dashboard">Dashboard</a>
         <a href="#pricing">Narxlar</a>
         <a href="{{ url_for('download_page') }}">Download</a>
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <a href="{{ url_for('admin_panel') }}" class="admin-link">
+          <i class="fas fa-crown"></i> Admin Panel
+        </a>
+        {% endif %}
       </div>
 
       <div class="nav-buttons">
@@ -303,7 +565,7 @@
   </nav>
 
   <main>
-    <!-- HERO -->
+    <!-- HERO SECTION -->
     <section id="home" class="hero">
       <div class="hero-content">
         <h1>AI asosida xavfsizlik tahlili</h1>
@@ -339,7 +601,7 @@
       </div>
     </section>
 
-    <!-- TOOLS -->
+    <!-- TOOLS SECTION -->
     <section id="tools" class="tools-section">
       <div class="tool-switcher">
         <button id="sql-tab" class="tool-tab active" onclick="showTool('sql-tool')">
@@ -509,9 +771,9 @@
           </div>
 
           <div class="table-wrap">
-             <table>
+            <table>
               <thead>
-                 <tr>
+                <tr>
                   <th>#</th>
                   <th>Payload File</th>
                   <th>Prediction</th>
@@ -521,11 +783,11 @@
                   <th>Length Δ</th>
                   <th>Matched SQL</th>
                   <th>Matched Suspicious</th>
-                 </tr>
+                </tr>
               </thead>
               <tbody>
                 {% for item in lab_case.payloads %}
-                 <tr>
+                <tr>
                   <td>{{ loop.index }}</td>
                   <td>{{ item.file }}</td>
                   <td><span class="mini-badge {{ badge_class_name(item.label) }}">{{ item.label }}</span></td>
@@ -535,10 +797,10 @@
                   <td>{{ item.length_delta }}</td>
                   <td>{% if item.matched_sql %}{{ item.matched_sql|join(', ') }}{% else %}-{% endif %}</td>
                   <td>{% if item.matched_suspicious %}{{ item.matched_suspicious|join(', ') }}{% else %}-{% endif %}</td>
-                 </tr>
+                </tr>
                 {% endfor %}
               </tbody>
-             </table>
+            </table>
           </div>
 
           {% if lab_case.payloads[0].diff_html %}
@@ -600,7 +862,7 @@
       </div>
     </section>
 
-    <!-- DASHBOARD -->
+    <!-- DASHBOARD SECTION -->
     <section id="dashboard" class="dashboard-section">
       <div class="bottom-grid">
         <section class="card chart-card">
@@ -653,7 +915,7 @@
       </div>
     </section>
 
-    <!-- FEATURES -->
+    <!-- FEATURES SECTION -->
     <section class="features">
       <h2>Imkoniyatlar</h2>
       <div class="features-grid">
@@ -680,7 +942,7 @@
       </div>
     </section>
 
-    <!-- PRICING -->
+    <!-- PRICING SECTION -->
     <section id="pricing" class="pricing">
       <h2>Tarif rejalari</h2>
       <div class="pricing-grid">
@@ -908,7 +1170,7 @@
     function copyToken() {
         const token = "{{ current_user.api_token }}";
         navigator.clipboard.writeText(token);
-        alert("Token copied!");
+        alert("✅ Token nusxalandi!");
     }
     
     function showTool(toolId) {
