@@ -112,9 +112,25 @@
                   </span>
                 </td>
                 <td style="padding: 12px 15px;">
-                  <button class="action-btn" data-user-id="{{ user.id }}" data-user-email="{{ user.email }}" style="background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; padding: 6px 12px; color: #00ffff; cursor: pointer; transition: all 0.3s ease;">
-                    <i class="fas fa-edit"></i> Tahrirlash
-                  </button>
+                  <!-- Plan o'zgartirish -->
+                  <form method="POST" action="{{ url_for('admin_set_plan', user_id=user.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <select name="plan" style="background:#0a0a0a; border:1px solid rgba(0,255,255,0.3); color:#00ffff; border-radius:6px; padding:4px 8px; font-size:0.8rem; margin-right:4px;">
+                      <option value="free"      {% if user.subscription_plan == 'free'      %}selected{% endif %}>Bepul</option>
+                      <option value="pro"       {% if user.subscription_plan == 'pro'       %}selected{% endif %}>Pro</option>
+                      <option value="corporate" {% if user.subscription_plan == 'corporate' %}selected{% endif %}>Corporate</option>
+                    </select>
+                    <button type="submit" class="action-btn" style="background:rgba(0,255,255,0.1); border:1px solid rgba(0,255,255,0.3); border-radius:8px; padding:5px 10px; color:#00ffff; cursor:pointer;">
+                      <i class="fas fa-save"></i>
+                    </button>
+                  </form>
+                  <!-- Admin toggle -->
+                  <form method="POST" action="{{ url_for('admin_toggle_admin', user_id=user.id) }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="action-btn" style="background:{% if user.is_admin %}rgba(255,0,100,0.15){% else %}rgba(0,255,100,0.1){% endif %}; border:1px solid {% if user.is_admin %}rgba(255,0,100,0.4){% else %}rgba(0,255,100,0.3){% endif %}; border-radius:8px; padding:5px 10px; color:{% if user.is_admin %}#ff0064{% else %}#00ff64{% endif %}; cursor:pointer;" title="{% if user.is_admin %}Admin huquqini olish{% else %}Admin qilish{% endif %}">
+                      <i class="fas {% if user.is_admin %}fa-user-minus{% else %}fa-user-shield{% endif %}"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
               {% endfor %}
@@ -225,9 +241,9 @@
                   </span>
                 </td>
                 <td style="padding: 12px 15px;">
-                  <button class="view-btn" data-scan-id="{{ scan.id }}" style="background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; padding: 6px 12px; color: #00ffff; cursor: pointer; transition: all 0.3s ease;">
+                  <a href="{{ url_for('local_scan_detail', scan_id=scan.id) }}" class="view-btn" style="background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; padding: 6px 12px; color: #00ffff; cursor: pointer; transition: all 0.3s ease; text-decoration:none; display:inline-block;">
                     <i class="fas fa-eye"></i> Ko'rish
-                  </button>
+                  </a>
                 </td>
               </tr>
               {% endfor %}
@@ -330,24 +346,6 @@
 </style>
 
 <script>
-  // Add console log for admin panel (cyber feel)
   console.log('%c🔐 Admin Panel - AI Security Lab', 'color: #00ffff; font-size: 16px; font-weight: bold;');
-  console.log('%c⚠️ Bu sahifa faqat administratorlar uchun!', 'color: #ff00ff; font-size: 12px;');
-  
-  // Button click handlers
-  document.querySelectorAll('.action-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const userId = btn.getAttribute('data-user-id');
-      const userEmail = btn.getAttribute('data-user-email');
-      alert(`⚡ Admin funksiyasi ishlab chiqilmoqda\n\nFoydalanuvchi: ${userEmail || userId}`);
-    });
-  });
-  
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const scanId = btn.getAttribute('data-scan-id');
-      alert(`🔍 Scan tafsilotlari ishlab chiqilmoqda\n\nScan ID: ${scanId}`);
-    });
-  });
 </script>
 {% endblock %}

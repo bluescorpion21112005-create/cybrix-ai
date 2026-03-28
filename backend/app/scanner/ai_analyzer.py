@@ -10,12 +10,11 @@ class AIAnalyzer:
         self.vectorizer = TfidfVectorizer(max_features=1000)
         self.load_model()
 
-    def load_model(self):
-        """ML modelini yuklash"""
+    def load_model(self) -> None:
+        """ML modelini yuklash yoki yangi yaratish."""
         try:
             self.model = joblib.load("models/vulnerability_model.pkl")
-        except:
-            # Model mavjud bo'lmasa, yangisini yaratish
+        except (FileNotFoundError, Exception):
             self.model = RandomForestClassifier(n_estimators=100)
 
     async def analyze_vulnerabilities(self, scan_results: Dict) -> Dict:

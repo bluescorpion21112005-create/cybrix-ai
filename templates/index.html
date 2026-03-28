@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
@@ -537,6 +537,16 @@
         margin-bottom: 1rem;
         display: none;
     }
+
+    /* AI Suite link style */
+    .ai-suite-link {
+        background: linear-gradient(135deg, #00ffff, #ff00ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        font-weight: bold;
+        margin-left: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -558,12 +568,13 @@
         <a href="#tools">Tools</a>
         <a href="#dashboard">Dashboard</a>
         <a href="#pricing">Narxlar</a>
-        <a href="{{ url_for('download_page') }}">Download</a>
+        <a href="{{ url_for('ai_suite') }}" class="ai-suite-link">AI Suite</a>
         {% if current_user.is_authenticated and current_user.is_admin %}
         <a href="{{ url_for('admin_panel') }}" class="admin-link">
           <i class="fas fa-crown"></i> Admin Panel
         </a>
         {% endif %}
+        <a href="{{ url_for('download_page') }}">Download</a>
       </div>
 
       <div class="nav-buttons">
@@ -799,9 +810,9 @@
           </div>
 
           <div class="table-wrap">
-             <table>
+            <table>
               <thead>
-                 <tr>
+                <tr>
                   <th>#</th>
                   <th>Payload File</th>
                   <th>Prediction</th>
@@ -811,7 +822,7 @@
                   <th>Length Δ</th>
                   <th>Matched SQL</th>
                   <th>Matched Suspicious</th>
-                 </tr>
+                </tr>
               </thead>
               <tbody>
                 {% for item in lab_case.payloads %}
@@ -839,6 +850,18 @@
         </section>
         {% endif %}
       </div>
+
+      <!-- PENTEST TOOL (placeholder, currently empty) -->
+      <div id="pentest-tool" class="tool-panel">
+        <div class="panel-grid">
+          <section class="card">
+            <h2 class="section-title">AI Pentest Scanner</h2>
+            <p class="muted">Pentest scanning module will be available soon.</p>
+            <!-- You can add your pentest form here -->
+          </section>
+        </div>
+      </div>
+    </section>
 
     <!-- DASHBOARD SECTION -->
     <section id="dashboard" class="dashboard-section">
@@ -985,6 +1008,7 @@
         <a href="#home">Bosh sahifa</a>
         <a href="#tools">Tools</a>
         <a href="#dashboard">Dashboard</a>
+        <a href="{{ url_for('ai_suite') }}">AI Suite</a>
       </div>
       <div class="footer-section">
         <h4>Bog'lanish</h4>
@@ -1004,9 +1028,7 @@
     function isAllowedUrl(url) {
         if (!url) return true; // empty is allowed
         try {
-            // Remove protocol and get hostname
             let hostname = url.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').split(':')[0];
-            // Allowed patterns: localhost, 127.0.0.1, any domain ending with .lab (case insensitive)
             const allowedPatterns = [
                 /^localhost$/i,
                 /^127\.0\.0\.1$/,
@@ -1023,7 +1045,6 @@
         const singleUrl = document.getElementById('url').value.trim();
         const batchText = document.getElementById('batch_urls').value;
         
-        // Single URL validation
         const singleErrorDiv = document.getElementById('singleUrlError');
         if (singleUrl && !isAllowedUrl(singleUrl)) {
             singleErrorDiv.style.display = 'block';
@@ -1032,7 +1053,6 @@
             singleErrorDiv.style.display = 'none';
         }
         
-        // Batch URLs validation
         const batchErrorDiv = document.getElementById('batchUrlsError');
         if (batchText) {
             const urls = batchText.split('\n').filter(line => line.trim() !== '');
@@ -1050,7 +1070,6 @@
         return isValid;
     }
 
-    // Attach validation to the SQL form
     const sqlForm = document.getElementById('sqlForm');
     if (sqlForm) {
         sqlForm.addEventListener('submit', function(e) {

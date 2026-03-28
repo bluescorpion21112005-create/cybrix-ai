@@ -1,36 +1,44 @@
 /* ============================================
-   MATRIX RAIN & CYBER THEME - FULLY FIXED
+   COMBINED CYBER THEME - MATRIX RAIN + FUTURISTIC UI
    All effects preserved, no conflicts
    ============================================ */
 
-/* Matrix Rain Effect Styles */
-@keyframes matrixRain {
-    0% {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 0.8;
-    }
-    100% {
-        transform: translateY(100vh);
-        opacity: 0;
-    }
+/* ==================== GLOBAL VARIABLES ==================== */
+:root {
+    /* From first block */
+    --primary-cyan: #00ffff;
+    --primary-magenta: #ff00ff;
+    --primary-green: #00ff9d;
+    --bg-dark: #0a0c15;
+    --bg-darker: #05070f;
+    --glass-bg: rgba(10, 20, 30, 0.65);
+    --glass-border: rgba(0, 255, 255, 0.25);
+    --text-light: #e0e0e0;
+    --text-dim: #b0b0b0;
+    --glow-cyan: 0 0 10px rgba(0, 255, 255, 0.5);
+    --glow-magenta: 0 0 10px rgba(255, 0, 255, 0.5);
+    --transition: all 0.3s ease;
+    
+    /* From second block */
+    --primary-color: #2563eb;
+    --secondary-color: #7c3aed;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --success-color: #10b981;
+    --dark-color: #1f2937;
+    --light-color: #f3f4f6;
+    --border-color: #e5e7eb;
+    --cyber-cyan: #00ffff;
+    --cyber-blue: #00ccff;
 }
 
-@keyframes matrixGlow {
-    0% {
-        text-shadow: 0 0 2px #0f0, 0 0 5px #0f0;
-    }
-    100% {
-        text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Matrix Rain Canvas */
+/* ==================== MATRIX & PLEXUS BACKGROUND ==================== */
 #matrix-canvas {
     position: fixed;
     top: 0;
@@ -40,6 +48,17 @@
     pointer-events: none;
     z-index: 0;
     opacity: 0.2;
+}
+
+#plexus-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
 }
 
 .matrix-overlay {
@@ -62,18 +81,7 @@
     100% { opacity: 1; }
 }
 
-/* Plexus Canvas - Neural Network Mesh */
-#plexus-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-}
-
+/* ==================== BODY & BASE ==================== */
 body {
     position: relative;
     z-index: 2;
@@ -83,9 +91,26 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow-x: hidden;
 }
 
-/* Ensure content stays above matrix effect */
+/* Grid overlay from first block (subtle) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Ensure content stays above effects */
 .navbar,
 main,
 footer,
@@ -98,91 +123,49 @@ footer,
 .dashboard-section,
 .features,
 .pricing,
-.subscription-box {
+.subscription-box,
+.ai-suite-section {
     position: relative;
     z-index: 3;
 }
 
-.container.history-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-}
-
-:root {
-    --primary-color: #2563eb;
-    --secondary-color: #7c3aed;
-    --danger-color: #ef4444;
-    --warning-color: #f59e0b;
-    --success-color: #10b981;
-    --dark-color: #1f2937;
-    --light-color: #f3f4f6;
-    --text-color: #374151;
-    --border-color: #e5e7eb;
-    --cyber-cyan: #00ffff;
-    --cyber-blue: #00ccff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* ============================================
-   GLASSMORPHISM - Oynasimon effekt
-   ============================================ */
-.glass-card,
-.modal-content,
-.pricing-card,
-.scan-card {
-    background: rgba(15, 25, 45, 0.65) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 255, 255, 0.25);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-/* Card - with neon border animation preserved */
-.card {
+/* ==================== HEADER (from first block) ==================== */
+header {
     position: relative;
-    background: rgba(15, 25, 45, 0.65) !important;
+    padding: 2rem 0;
+    text-align: center;
+    background: rgba(5, 7, 15, 0.8);
     backdrop-filter: blur(12px);
-    padding: 50px 40px;
-    border-radius: 20px;
-    overflow: hidden;
-    z-index: 1;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 2rem;
 }
 
-.card::after {
-    content: '';
-    position: absolute;
-    inset: 5px;
-    background: rgba(15, 25, 45, 0.8);
-    border-radius: 16px;
-    z-index: -1;
+header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-magenta), var(--primary-green));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    animation: glowPulse 3s infinite;
 }
 
-.card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(
-        #00ffff,
-        #00ccff,
-        #0099ff,
-        #00ffff
-    );
-    animation: rotateNeon 6s linear infinite;
-    z-index: -2;
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 5px rgba(0, 255, 255, 0.3); }
+    50% { text-shadow: 0 0 20px rgba(0, 255, 255, 0.6); }
+    100% { text-shadow: 0 0 5px rgba(0, 255, 255, 0.3); }
 }
 
-/* Navbar glassmorphism */
+header p {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+}
+
+/* ==================== NAVBAR (glassmorphism) ==================== */
 .navbar {
     background: rgba(10, 20, 40, 0.85) !important;
     backdrop-filter: blur(12px);
@@ -211,6 +194,7 @@ footer,
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--cyber-cyan);
+    text-shadow: 0 0 10px #00ffff;
 }
 
 .logo i {
@@ -249,9 +233,7 @@ footer,
     color: white;
 }
 
-/* ============================================
-   BUTTONS - NEON GLOW & CYBER COLORS
-   ============================================ */
+/* ==================== BUTTONS ==================== */
 .btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -311,9 +293,7 @@ button[type="submit"]:hover {
     font-weight: 500;
 }
 
-/* ============================================
-   HERO SECTION - FIXED
-   ============================================ */
+/* ==================== HERO SECTION ==================== */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -336,7 +316,7 @@ button[type="submit"]:hover {
     z-index: -1;
 }
 
-/* Scanning Line - Cyber Effect */
+/* Scanning Line */
 .hero::after {
     content: '';
     position: absolute;
@@ -365,7 +345,6 @@ button[type="submit"]:hover {
 .hero-content h1 {
     font-size: 3.5rem;
     margin-bottom: 1rem;
-    animation: fadeInUp 1s ease;
     text-shadow: 0 0 10px #00ffff, 0 0 20px #00ccff, 0 0 30px #0099ff;
     animation: neonPulse 2s ease-in-out infinite alternate, fadeInUp 1s ease;
 }
@@ -464,9 +443,140 @@ button[type="submit"]:hover {
     font-size: 1rem;
 }
 
-/* ============================================
-   FLOATING LABELS - MATERIAL DESIGN
-   ============================================ */
+/* ==================== GENERAL CARD (Glassmorphism with neon border) ==================== */
+.card {
+    position: relative;
+    background: rgba(15, 25, 45, 0.65) !important;
+    backdrop-filter: blur(12px);
+    padding: 50px 40px;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 1;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    background: rgba(15, 25, 45, 0.8);
+    border-radius: 16px;
+    z-index: -1;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        #00ffff,
+        #00ccff,
+        #0099ff,
+        #00ffff
+    );
+    animation: rotateNeon 6s linear infinite;
+    z-index: -2;
+}
+
+@keyframes rotateNeon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Special card style for AI Suite links (from first block) */
+.ai-suite-section .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-suite-section .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    z-index: 1;
+    animation: none;
+}
+
+.ai-suite-section .card:hover::before {
+    left: 100%;
+}
+
+.ai-suite-section .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-cyan);
+    box-shadow: var(--glow-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.ai-suite-section .card::after {
+    content: "➡";
+    margin-left: auto;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    transition: var(--transition);
+    position: relative;
+    background: none;
+    inset: auto;
+    width: auto;
+    height: auto;
+    animation: none;
+}
+
+.ai-suite-section .card:hover::after {
+    opacity: 1;
+    transform: translateX(5px);
+    color: var(--primary-cyan);
+}
+
+/* ==================== CATEGORY & CARD GRID (for AI Suite) ==================== */
+.category {
+    margin-bottom: 3rem;
+}
+
+.category h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-cyan);
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--primary-cyan), transparent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+}
+
+/* ==================== FORM STYLES (floating labels) ==================== */
 .form-block {
     position: relative;
     margin-bottom: 30px;
@@ -550,9 +660,49 @@ button[type="submit"]:hover {
     color: #ccc;
 }
 
-/* ============================================
-   FEATURES SECTION
-   ============================================ */
+/* ==================== RESULT SECTION ==================== */
+.result {
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 4px solid var(--primary-cyan);
+    padding: 1.5rem;
+    margin: 2rem auto;
+    max-width: 800px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.5s;
+}
+
+.result h3 {
+    color: var(--primary-cyan);
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+}
+
+.result pre {
+    background: #00000066;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #aaffaa;
+}
+
+.confidence {
+    font-size: 0.9rem;
+    color: var(--primary-green);
+    margin-top: 1rem;
+    text-align: right;
+    border-top: 1px dashed var(--glass-border);
+    padding-top: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== FEATURES SECTION ==================== */
 .features {
     padding: 5rem 2rem;
     background: transparent;
@@ -605,9 +755,7 @@ button[type="submit"]:hover {
     color: #ccc;
 }
 
-/* ============================================
-   PRICING SECTION
-   ============================================ */
+/* ==================== PRICING SECTION ==================== */
 .pricing {
     padding: 5rem 2rem;
     background: transparent;
@@ -701,9 +849,7 @@ button[type="submit"]:hover {
     color: var(--danger-color);
 }
 
-/* ============================================
-   SCAN RESULTS & PROGRESS BAR
-   ============================================ */
+/* ==================== SCAN RESULTS & PROGRESS ==================== */
 .scan-results {
     padding: 1rem 0;
 }
@@ -743,9 +889,7 @@ button[type="submit"]:hover {
     100% { transform: translateX(100%); }
 }
 
-/* ============================================
-   VULNERABILITY ITEMS
-   ============================================ */
+/* ==================== VULNERABILITY ITEMS ==================== */
 .vulnerability-item {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(0, 255, 255, 0.3);
@@ -805,7 +949,7 @@ button[type="submit"]:hover {
     color: #00ffff;
 }
 
-/* AI ANALYSIS BOX - NEON GLOW */
+/* ==================== AI ANALYSIS BOX ==================== */
 .ai-analysis {
     background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 100, 255, 0.2));
     border: 1px solid #00ffff;
@@ -822,9 +966,7 @@ button[type="submit"]:hover {
     100% { border-color: #00ccff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); }
 }
 
-/* ============================================
-   KEYWORD CHIPS - CYBER STYLE
-   ============================================ */
+/* ==================== KEYWORD CHIPS ==================== */
 .chip {
     background: rgba(0, 255, 255, 0.15);
     border: 1px solid rgba(0, 255, 255, 0.4);
@@ -860,9 +1002,7 @@ button[type="submit"]:hover {
     font-weight: bold;
 }
 
-/* ============================================
-   STATS GRID
-   ============================================ */
+/* ==================== STATS GRID ==================== */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -925,15 +1065,14 @@ button[type="submit"]:hover {
     color: #00ffff;
 }
 
-/* ============================================
-   FOOTER
-   ============================================ */
+/* ==================== FOOTER ==================== */
 footer {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(12px);
     color: white;
     padding: 3rem 2rem 1rem;
     border-top: 1px solid rgba(0, 255, 255, 0.3);
+    margin-top: 3rem;
 }
 
 .footer-content {
@@ -971,9 +1110,7 @@ footer {
     color: #9ca3af;
 }
 
-/* ============================================
-   SUBSCRIPTION BOX
-   ============================================ */
+/* ==================== SUBSCRIPTION BOX ==================== */
 .subscription-box {
     background: rgba(15, 25, 45, 0.65);
     backdrop-filter: blur(12px);
@@ -999,9 +1136,7 @@ footer {
     color: #00ffff;
 }
 
-/* ============================================
-   MODAL
-   ============================================ */
+/* ==================== MODAL ==================== */
 .modal {
     display: none;
     position: fixed;
@@ -1047,9 +1182,7 @@ footer {
     color: var(--danger-color);
 }
 
-/* ============================================
-   LOADING ANIMATION - CYBER
-   ============================================ */
+/* ==================== LOADING ==================== */
 .loading {
     text-align: center;
     padding: 2rem;
@@ -1073,128 +1206,7 @@ footer {
     to { transform: rotate(360deg); }
 }
 
-/* ============================================
-   SCROLLBAR - CYBER STYLE
-   ============================================ */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #00ffff, #00ccff);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #00ffff;
-}
-
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes rotateNeon {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* ============================================
-   RESPONSIVE DESIGN
-   ============================================ */
-@media (max-width: 768px) {
-    .nav-links,
-    .nav-buttons {
-        display: none;
-    }
-    
-    .mobile-menu-btn {
-        display: block;
-    }
-    
-    .hero-content h1 {
-        font-size: 2rem;
-    }
-    
-    .hero {
-        padding: 80px 1rem 1rem;
-    }
-    
-    .input-group {
-        flex-direction: column;
-    }
-    
-    .hero-stats {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .pricing-card.popular {
-        transform: scale(1);
-    }
-    
-    .footer-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .stat-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-    
-    .card {
-        padding: 30px 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .stat-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .hero-content h1 {
-        font-size: 1.8rem;
-    }
-    
-    .btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-    }
-}
+/* ==================== CYBER UPLOAD STYLES ==================== */
 .cyber-upload-wrap {
   width: 100%;
   margin-top: 8px;
@@ -1228,11 +1240,6 @@ footer {
     0 0 0 1px rgba(0, 255, 255, 0.14) inset,
     0 0 24px rgba(0, 255, 255, 0.20),
     0 0 36px rgba(128, 0, 255, 0.12);
-}
-
-.cyber-pick-btn:focus {
-  outline: none;
-  border-color: rgba(0, 255, 255, 0.85);
 }
 
 .pick-btn-icon {
@@ -1364,6 +1371,8 @@ footer {
   box-shadow: 0 0 14px rgba(0, 247, 255, 0.35);
   transition: width 0.25s ease;
 }
+
+/* ==================== ADDITIONAL BUTTONS ==================== */
 .btn-google {
   display: inline-block;
   width: 100%;
@@ -1434,4 +1443,360 @@ footer {
 .alert-info {
   background: rgba(0, 170, 255, 0.08);
   color: #a9e4ff;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .nav-links,
+    .nav-buttons {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero {
+        padding: 80px 1rem 1rem;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .pricing-card.popular {
+        transform: scale(1);
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .card {
+        padding: 30px 20px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        width: 95%;
+        padding: 0 10px;
+    }
+
+    form, .result {
+        margin: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ==================== SCROLLBAR (cyber style) ==================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ffff, #00ccff);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ffff;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.glow-text {
+    text-shadow: 0 0 5px var(--primary-cyan);
+}
+
+.cyber-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-cyan), var(--primary-magenta), transparent);
+    width: 100%;
+    margin: 1rem 0;
+}
+/* ============================================
+   FUTURISTIC CYBER UI – FOR ALL AI TOOL PAGES
+   ============================================ */
+
+/* Cyber color palette */
+:root {
+    --neon-cyan: #0ff;
+    --neon-magenta: #f0f;
+    --neon-green: #0f0;
+    --glass-bg: rgba(10, 20, 40, 0.65);
+    --glass-border: rgba(0, 255, 255, 0.25);
+    --glow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Orbitron', 'Courier New', monospace;
+    background: #0a0c15;
+    color: #e0e0e0;
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated grid background */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Matrix rain effect (optional – can be removed if not needed) */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0, 255, 0, 0.03) 0px, rgba(0, 255, 0, 0.03) 2px, transparent 2px, transparent 6px);
+    pointer-events: none;
+    z-index: -1;
+    animation: matrixRain 20s linear infinite;
+}
+
+@keyframes matrixRain {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.container:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow);
+}
+
+/* Headings */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 2px rgba(0, 255, 255, 0.3); }
+    100% { text-shadow: 0 0 15px rgba(0, 255, 255, 0.7); }
+}
+
+p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #b0b0b0;
+}
+
+/* Form styling */
+form {
+    margin: 1.5rem 0;
+}
+
+label {
+    display: block;
+    margin: 1rem 0 0.5rem;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+button, input[type="submit"] {
+    background: linear-gradient(135deg, var(--neon-cyan), #00ccff);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button:hover, input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* Result box */
+.result {
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 4px solid var(--neon-cyan);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.5s;
+}
+
+.result h3 {
+    color: var(--neon-cyan);
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+}
+
+.result pre {
+    background: #00000066;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: #aaffaa;
+}
+
+.confidence {
+    font-size: 0.9rem;
+    color: var(--neon-green);
+    margin-top: 1rem;
+    text-align: right;
+    border-top: 1px dashed var(--glass-border);
+    padding-top: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #666;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #05070f;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--neon-cyan);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--neon-magenta);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
 }

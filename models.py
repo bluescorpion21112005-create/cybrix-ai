@@ -309,7 +309,18 @@ class Notification(db.Model):
     
     def __repr__(self):
         return f"<Notification {self.id} - {self.title}>"
-
+class AnalysisResult(db.Model):
+    __tablename__ = "analysis_result"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    feature = db.Column(db.String(100), nullable=False)
+    input_data = db.Column(db.Text, nullable=False)
+    result = db.Column(db.Text, nullable=False)
+    confidence = db.Column(db.Float, default=1.0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f"<AnalysisResult {self.id} - {self.feature}>"
 
 class ActivityLog(db.Model):
     __tablename__ = "activity_log"

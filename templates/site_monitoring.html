@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="padding:40px 20px; max-width:1200px; margin:0 auto;">
+  <h1 style="color:#00ffff; margin-bottom:24px;">
+    <i class="fas fa-satellite-dish"></i> Site Monitoring
+  </h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }}" style="padding:12px 16px; border-radius:8px; margin-bottom:16px;
+        background:{% if cat=='danger' %}rgba(239,68,68,.15){% else %}rgba(34,197,94,.15){% endif %};
+        border:1px solid {% if cat=='danger' %}#ef4444{% else %}#22c55e{% endif %};
+        color:{% if cat=='danger' %}#ef4444{% else %}#22c55e{% endif %};">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endwith %}
+
+  {% if monitors %}
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; background:rgba(0,0,0,.3); border-radius:12px; overflow:hidden;">
+      <thead>
+        <tr style="background:rgba(0,255,255,.1); border-bottom:2px solid rgba(0,255,255,.3);">
+          <th style="padding:14px; text-align:left; color:#00ffff;">URL</th>
+          <th style="padding:14px; text-align:left; color:#00ffff;">Status</th>
+          <th style="padding:14px; text-align:left; color:#00ffff;">Last checked</th>
+          <th style="padding:14px; text-align:left; color:#00ffff;">Interval</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in monitors %}
+        <tr style="border-bottom:1px solid rgba(0,255,255,.1);">
+          <td style="padding:12px 14px; color:#fff;">{{ m.target_url }}</td>
+          <td style="padding:12px 14px;">
+            <span style="color:{% if m.is_active %}#22c55e{% else %}#ef4444{% endif %};">
+              <i class="fas fa-circle" style="font-size:.6rem;"></i>
+              {{ 'Active' if m.is_active else 'Inactive' }}
+            </span>
+          </td>
+          <td style="padding:12px 14px; color:#888; font-size:.85rem;">
+            {{ m.last_checked_at.strftime('%Y-%m-%d %H:%M') if m.last_checked_at else '—' }}
+          </td>
+          <td style="padding:12px 14px; color:#888;">{{ m.check_interval }}s</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center; padding:60px 20px; color:#888;">
+    <i class="fas fa-satellite-dish" style="font-size:3rem; color:rgba(0,255,255,.3); margin-bottom:16px;"></i>
+    <p>No sites being monitored yet.</p>
+    <p style="font-size:.85rem; margin-top:8px;">Add a verified project to start monitoring.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

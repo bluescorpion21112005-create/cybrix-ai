@@ -1,9 +1,16 @@
 Flask==3.1.0
 Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.2
 Werkzeug==3.1.3
 MarkupSafe==3.0.2
-requests==2.32.3
+Authlib==1.4.1
+
+# requests + urllib3 pinned together to avoid RequestsDependencyWarning
+requests==2.31.0
+urllib3==2.2.3
+charset-normalizer==3.3.2
+
 beautifulsoup4==4.13.3
 aiohttp==3.12.15
 numpy==2.3.2
@@ -17,17 +24,20 @@ uvicorn==0.34.0
 python-multipart==0.0.20
 sqlalchemy==2.0.39
 pydantic==2.12.1
-gunicorn
-pandas
-transformers
-torch
-pefile
-scapy
-face_recognition
-speechrecognition
-pytesseract
-pillow
-networkx
-tldextract
-requests
-python-magic
+psycopg2-binary==2.9.10
+gunicorn==23.0.0
+
+# Transformers pinned to last version that supports summarization/text-generation
+transformers==4.44.2
+torch==2.10.0
+
+# Optional extras — install only if feature is used
+# pefile
+# scapy
+# SpeechRecognition
+# pytesseract
+# Pillow
+# networkx
+# tldextract
+# openai
+# face_recognition

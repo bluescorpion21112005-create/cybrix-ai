@@ -1,23 +1,33 @@
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, UploadFile, File
-from fastapi.responses import FileResponse
-from typing import List, Optional
-from pydantic import BaseModel
-from datetime import datetime
+"""
+backend/app/api/routes.py — FastAPI scanner API endpoints.
+"""
+import logging
 import os
+from datetime import datetime
+from typing import List, Optional
 
-from app.scanner.vulnerability_scanner import VulnerabilityScanner
-from app.scanner.reporters import ReportGenerator
-from app.models import ScanResult
-from app.database import get_db
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.database import get_db
+from app.models import ScanResult
+from app.scanner.reporters import ReportGenerator
+from app.scanner.vulnerability_scanner import VulnerabilityScanner
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 scanner = VulnerabilityScanner()
 
+SUPPORTED_FORMATS = {"html", "pdf", "json", "md"}
+
+
+# ── Pydantic schemas ──────────────────────────────────────────────────────────
 
 class ScanRequest(BaseModel):
     url: str
-    scan_type: str = "full"  # quick, full, ai_enhanced
+    scan_type: str = "full"  # quick | full | ai_enhanced
 
 
 class ScanResponse(BaseModel):
@@ -33,74 +43,106 @@ class VulnerabilityInfo(BaseModel):
     remediation: Optional[str] = None
 
 
-@router.post("/scan", response_model=ScanResponse)
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _get_scan_or_404(scan_id: int, db: Session) -> ScanResult:
+    scan = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
+    if not scan:
+        raise HTTPException(status_code=404, detail="Scan not found")
+    return scan
+
+
+async def _perform_scan(scan_id: int, url: str, scan_type: str, db: Session) -> None:
+    """Background scan task."""
+    scan = _get_scan_or_404(scan_id, db)
+    try:
+        scan.status = "running"
+        db.commit()
+
+        results = (
+            await scanner.quick_scan(url)
+            if scan_type == "quick"
+            else await scanner.deep_scan(url)
+        )
+
+        scan.status = "completed"
+        scan.end_time = datetime.utcnow()
+        scan.vulnerabilities = results.get("vulnerabilities", [])
+        scan.summary = results.get("summary", {})
+
+        report_gen = ReportGenerator(results)
+        scan.report_path = report_gen.generate_html_report()
+        db.commit()
+
+    except Exception as exc:
+        logger.exception("Scan failed (id=%s): %s", scan_id, exc)
+        scan = _get_scan_or_404(scan_id, db)
+        scan.status = "failed"
+        scan.summary = {"error": str(exc)}
+        db.commit()
+
+
+# ── Endpoints ─────────────────────────────────────────────────────────────────
+
+@router.post("/scan", response_model=ScanResponse, status_code=202)
 async def start_scan(
     scan_request: ScanRequest,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
-    """Yangi skanerlashni boshlash"""
+    """Start a new vulnerability scan."""
     try:
-        # Yangi scan yozuvini yaratish
-        scan_result = ScanResult(
+        scan = ScanResult(
             target_url=scan_request.url,
             scan_type=scan_request.scan_type,
             status="pending",
         )
-        db.add(scan_result)
+        db.add(scan)
         db.commit()
-        db.refresh(scan_result)
+        db.refresh(scan)
 
-        # Backgroundda skanerlashni boshlash
         background_tasks.add_task(
-            perform_scan,
-            scan_id=scan_result.id,
+            _perform_scan,
+            scan_id=scan.id,
             url=scan_request.url,
             scan_type=scan_request.scan_type,
             db=db,
         )
+        return ScanResponse(scan_id=scan.id, status="pending", message="Scan started")
 
-        return ScanResponse(
-            scan_id=scan_result.id, status="pending", message="Skanerlash boshlandi"
-        )
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as exc:
+        logger.exception("start_scan error: %s", exc)
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.get("/scan/{scan_id}")
 async def get_scan_status(scan_id: int, db: Session = Depends(get_db)):
-    """Skanerlash holatini olish"""
-    scan_result = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
-    if not scan_result:
-        raise HTTPException(status_code=404, detail="Scan not found")
-
-    return scan_result.to_dict()
+    """Get scan status and results."""
+    return _get_scan_or_404(scan_id, db).to_dict()
 
 
-@router.get("/scan/{scan_id}/report/{format}")
-async def get_report(scan_id: int, format: str, db: Session = Depends(get_db)):
-    """Hisobotni olish (html, pdf, json, md)"""
-    scan_result = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
-    if not scan_result:
-        raise HTTPException(status_code=404, detail="Scan not found")
+@router.get("/scan/{scan_id}/report/{fmt}")
+async def get_report(scan_id: int, fmt: str, db: Session = Depends(get_db)):
+    """Download scan report (html, pdf, json, md)."""
+    if fmt not in SUPPORTED_FORMATS:
+        raise HTTPException(status_code=400, detail=f"Supported formats: {SUPPORTED_FORMATS}")
 
-    if scan_result.status != "completed":
+    scan = _get_scan_or_404(scan_id, db)
+    if scan.status != "completed":
         raise HTTPException(status_code=400, detail="Scan not completed yet")
 
-    # Hisobot yaratish
-    report_gen = ReportGenerator(scan_result.to_dict())
-
-    if format == "html":
-        filepath = report_gen.generate_html_report()
-    elif format == "pdf":
-        filepath = report_gen.generate_pdf_report()
-    elif format == "json":
-        filepath = report_gen.generate_json_report()
-    elif format == "md":
-        filepath = report_gen.generate_markdown_report()
-    else:
-        raise HTTPException(status_code=400, detail="Unsupported format")
+    report_gen = ReportGenerator(scan.to_dict())
+    handlers = {
+        "html": report_gen.generate_html_report,
+        "pdf":  report_gen.generate_pdf_report,
+        "json": report_gen.generate_json_report,
+        "md":   report_gen.generate_markdown_report,
+    }
+    try:
+        filepath = handlers[fmt]()
+    except Exception as exc:
+        logger.exception("Report generation failed: %s", exc)
+        raise HTTPException(status_code=500, detail="Report generation failed")
 
     return FileResponse(
         filepath,
@@ -110,115 +152,70 @@ async def get_report(scan_id: int, format: str, db: Session = Depends(get_db)):
 
 
 @router.get("/scans")
-async def get_all_scans(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    """Barcha skanerlashlarni olish"""
+async def get_all_scans(
+    skip: int = 0, limit: int = 10, db: Session = Depends(get_db)
+):
+    """List all scans (paginated)."""
+    limit = min(limit, 100)
     scans = (
         db.query(ScanResult)
         .order_by(ScanResult.start_time.desc())
-        .offset(skip)
-        .limit(limit)
-        .all()
+        .offset(skip).limit(limit).all()
     )
+    return [s.to_dict() for s in scans]
 
-    return [scan.to_dict() for scan in scans]
 
-
-@router.delete("/scan/{scan_id}")
+@router.delete("/scan/{scan_id}", status_code=200)
 async def delete_scan(scan_id: int, db: Session = Depends(get_db)):
-    """Skanerlashni o'chirish"""
-    scan_result = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
-    if not scan_result:
-        raise HTTPException(status_code=404, detail="Scan not found")
-
-    db.delete(scan_result)
+    """Delete a scan record."""
+    scan = _get_scan_or_404(scan_id, db)
+    db.delete(scan)
     db.commit()
-
-    return {"message": "Scan deleted successfully"}
+    return {"message": "Scan deleted"}
 
 
 @router.get("/vulnerability-types")
 async def get_vulnerability_types():
-    """Qo'llab-quvvatlanadigan zaiflik turlari"""
+    """List supported vulnerability types."""
     return scanner.get_vulnerability_types()
 
 
-async def perform_scan(scan_id: int, url: str, scan_type: str, db: Session):
-    """Background skanerlash funksiyasi"""
-    try:
-        # Statusni yangilash
-        scan = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
-        scan.status = "running"
-        db.commit()
-
-        # Skanerlashni amalga oshirish
-        if scan_type == "quick":
-            results = await scanner.quick_scan(url)
-        else:
-            results = await scanner.deep_scan(url)
-
-        # Natijalarni saqlash
-        scan.status = "completed"
-        scan.end_time = datetime.utcnow()
-        scan.vulnerabilities = results.get("vulnerabilities", [])
-        scan.summary = results.get("summary", {})
-
-        # Hisobot yaratish
-        report_gen = ReportGenerator(results)
-        report_path = report_gen.generate_html_report()
-        scan.report_path = report_path
-
-        db.commit()
-
-    except Exception as e:
-        # Xatolik yuz berganda
-        scan = db.query(ScanResult).filter(ScanResult.id == scan_id).first()
-        scan.status = "failed"
-        scan.summary = {"error": str(e)}
-        db.commit()
-
-
-# Batch skanerlash
-@router.post("/batch-scan")
+@router.post("/batch-scan", status_code=202)
 async def batch_scan(
-    urls: List[str], background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+    urls: List[str],
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
 ):
-    """Bir nechta URL larni skanerlash"""
+    """Scan multiple URLs."""
+    if not urls:
+        raise HTTPException(status_code=400, detail="URL list is empty")
+
     scan_ids = []
-
     for url in urls:
-        scan_result = ScanResult(target_url=url, scan_type="quick", status="pending")
-        db.add(scan_result)
+        scan = ScanResult(target_url=url, scan_type="quick", status="pending")
+        db.add(scan)
         db.commit()
-        db.refresh(scan_result)
-
-        background_tasks.add_task(
-            perform_scan, scan_id=scan_result.id, url=url, scan_type="quick", db=db
-        )
-
-        scan_ids.append(scan_result.id)
+        db.refresh(scan)
+        background_tasks.add_task(_perform_scan, scan.id, url, "quick", db)
+        scan_ids.append(scan.id)
 
     return {"scan_ids": scan_ids, "count": len(scan_ids)}
 
 
-# Fayl yuklash orqali skanerlash
-@router.post("/upload-scan")
+@router.post("/upload-scan", status_code=202)
 async def upload_scan(
     file: UploadFile = File(...),
     background_tasks: BackgroundTasks = BackgroundTasks(),
     db: Session = Depends(get_db),
 ):
-    """Fayl yuklash orqali skanerlash"""
+    """Upload a file of URLs and scan them all."""
     try:
-        # Faylni saqlash
         content = await file.read()
-        urls = content.decode().split("\n")
-        urls = [url.strip() for url in urls if url.strip()]
+        urls = [u.strip() for u in content.decode().splitlines() if u.strip()]
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Could not read file: {exc}")
 
-        if not urls:
-            raise HTTPException(status_code=400, detail="No valid URLs found")
+    if not urls:
+        raise HTTPException(status_code=400, detail="No valid URLs in file")
 
-        # Skanerlashni boshlash
-        return await batch_scan(urls, background_tasks, db)
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return await batch_scan(urls, background_tasks, db)

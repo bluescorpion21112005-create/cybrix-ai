@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <!-- Toolga oid maxsus meta yoki scriptlar shu yerga -->
+{% endblock %}
+
+{% block content %}
+<div class="container" style="min-height: calc(100vh - 200px); padding: 40px 20px;">
+  <div class="tool-page">
+    <div class="tool-header cyber-header">
+      <h1>
+        <i class="fas fa-robot"></i> 
+        {{ tool_name }}
+      </h1>
+      <p>{{ tool_description }}</p>
+    </div>
+
+    <div class="tool-grid">
+      <!-- Chap panel: input form -->
+      <div class="card tool-card">
+        <div class="card-header">
+          <i class="fas fa-terminal"></i> 
+          <span>🔍 Tahlil so'rovi</span>
+        </div>
+        <form method="POST" action="{{ url_for(tool_route) }}" id="aiToolForm">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          
+          {% block tool_form %}
+            <!-- Har bir tool o'z input maydonlarini shu yerga qo'shadi -->
+          {% endblock %}
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-full">
+              <i class="fas fa-microchip"></i> AI tahlil qil
+            </button>
+          </div>
+        </form>
+        
+        <div class="info-hint">
+          <i class="fas fa-lightbulb"></i> Maslahat: Ma'lumotni yuqoridagi maydonga kiriting va "AI tahlil qil" tugmasini bosing.
+        </div>
+      </div>
+
+      <!-- O'ng panel: natija -->
+      <div class="card result-card">
+        <div class="card-header">
+          <i class="fas fa-chart-line"></i> 
+          <span>📊 AI Tahlil Natijasi</span>
+        </div>
+        <div class="result-content">
+          {% if result %}
+            <div class="result-badge cyber-glow">
+              {{ result }}
+            </div>
+            {% if confidence %}
+              <div class="confidence-meter">
+                <div class="meter-label">Ishonchlilik darajasi</div>
+                <div class="progress-bar-cyber">
+                  <div class="progress-fill" style="width: {{ confidence * 100 }}%"></div>
+                </div>
+                <div class="confidence-value">{{ (confidence * 100)|int }}%</div>
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="placeholder-message">
+              <i class="fas fa-brain"></i>
+              <p>Natija hali mavjud emas. Yuqoridagi so'rovni yuboring.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Toolga oid maxsus JS (ixtiyoriy)
+  document.addEventListener('DOMContentLoaded', function() {
+    // Masalan, forma yuborishdan oldin tekshirish
+    const form = document.getElementById('aiToolForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        // Agar kerak bo'lsa, validatsiya
+      });
+    }
+  });
+</script>
+{% endblock %}
